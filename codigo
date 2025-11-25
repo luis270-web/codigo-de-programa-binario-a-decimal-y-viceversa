@@ -235,5 +235,82 @@ public class Convertidor {
                 if (campoTexto.getText().length() >= 9) {
                     e.consume(); // Bloqueo el siguiente carácter
                 }
-            }
-        });
+            }
+        });
+
+        // Armo la ventana de confirmación con mi mensaje y el campo de texto
+        int opcion = JOptionPane.showConfirmDialog(
+                null,
+                new Object[]{mensajeVentana, campoTexto}, // Muestro texto arriba y campo abajo
+                tituloVentana,
+                JOptionPane.OK_CANCEL_OPTION,
+                JOptionPane.QUESTION_MESSAGE
+        );
+
+        // Si el usuario le dio en "Cancelar" o cerró la ventana
+        if (opcion != JOptionPane.OK_OPTION) {
+            return null;
+        }
+
+        // Tomo el texto que escribió el usuario
+        String textoIngresado = campoTexto.getText();
+
+        if (textoIngresado == null) {
+            return null;
+        }
+
+        // Regreso el texto 
+        return textoIngresado.trim();
+    }
+
+   
+    // Ventanita que SOLO acepta 0 y 1 (para binarios)
+   
+    private static String pedirSoloBinarios(String tituloVentana, String mensajeVentana) {
+
+        JTextField campoTexto = new JTextField();
+
+        campoTexto.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                char tecla = e.getKeyChar();
+
+                // Dejo pasar Backspace para que sí pueda borrar
+                if (tecla == '\b') {
+                    return;
+                }
+
+                // Solo permito '0' y '1'
+                if (tecla != '0' && tecla != '1') {
+                    e.consume(); // Cancelo la tecla
+                    return;
+                }
+
+                // Limito a 9 caracteres máximo
+                if (campoTexto.getText().length() >= 9) {
+                    e.consume();
+                }
+            }
+        });
+
+        int opcion = JOptionPane.showConfirmDialog(
+                null,
+                new Object[]{mensajeVentana, campoTexto},
+                tituloVentana,
+                JOptionPane.OK_CANCEL_OPTION,
+                JOptionPane.QUESTION_MESSAGE
+        );
+
+        if (opcion != JOptionPane.OK_OPTION) {
+            return null;
+        }
+
+        String textoIngresado = campoTexto.getText();
+
+        if (textoIngresado == null) {
+            return null;
+        }
+
+        return textoIngresado.trim();
+    }
+}
