@@ -1,0 +1,77 @@
+import java.util.Scanner;
+
+public class conversor{
+    public static void main(String[] args) {
+
+        Scanner entrada = new Scanner(System.in); // 1. Crear el Scanner para leer del teclado
+
+        int opcion;
+        int numeroEntrada;
+
+        System.out.println("--= CONVERSOR DE NÚMEROS =--");
+        System.out.println("1. Convertir Decimal a Binario");
+        System.out.println("2. Convertir Binario a Decimal");
+        System.out.println("Elige una opción (1 o 2): ");
+        opcion = entrada.nextInt();
+
+        // 2. Estructura Switch para el menú
+        switch (opcion) {
+
+            case 1: // DECIMAL A BINARIO
+                System.out.print("Ingresa un número decimal (ej. 10): ");
+                numeroEntrada = entrada.nextInt();
+
+                // Validación sencilla para negativos
+                if (numeroEntrada < 0) {
+                    System.out.println("Por favor ingresa números positivos.");
+                } else {
+                    String resultadoBinario = ""; // Usamos String para guardar el resultado
+                    int temporal = numeroEntrada; // Copia para no perder el valor original
+
+                    // Si el número es 0, el binario es 0
+                    if (temporal == 0) {
+                        resultadoBinario = "0";
+                    }
+
+                    // Ciclo: Mientras el número sea mayor a 0
+                    while (temporal > 0) {
+                        int residuo = temporal % 2; // Obtenemos 0 o 1
+                        // IMPORTANTE: Sumamos el residuo AL INICIO del texto
+                        // Esto invierte el orden automáticamente sin usar arreglos
+                        resultadoBinario = residuo + resultadoBinario;
+                        temporal = temporal / 2; // Dividimos entre 2 para la siguiente vuelta
+                    }
+
+                    System.out.println("El número " + numeroEntrada + " en binario es: " + resultadoBinario);
+                }
+                break;
+
+            case 2: // BINARIO A DECIMAL
+                System.out.print("Ingresa un número binario (ej. 101): ");
+                numeroEntrada = entrada.nextInt();
+
+                int resultadoDecimal = 0;
+                int base = 1; // Representa 2^0, luego 2^1, 2^2, etc. (1, 2, 4, 8...)
+
+                int temporal = numeroEntrada;
+
+                // Ciclo: Mientras queden dígitos en el número
+                while (temporal > 0) {
+                    int ultimoDigito = temporal % 10; // Sacamos el último dígito (el de la derecha)
+
+                    // Solo procesamos si es binario real (0 o 1)
+                    // Calculamos el valor: dígito × base actual
+                    resultadoDecimal = resultadoDecimal + (ultimoDigito * base);
+
+                    temporal = temporal / 10; // Eliminamos el último dígito
+                    base = base * 2; // Aumentamos la potencia de 2 (1, 2, 4, 8...)
+                }
+
+                System.out.println("El binario " + numeroEntrada + " en decimal es: " + resultadoDecimal);
+                break;
+
+            default:
+                System.out.println("Opción no válida. Reinicia el programa.");
+        }
+    }
+}
