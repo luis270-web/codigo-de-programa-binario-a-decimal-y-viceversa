@@ -313,4 +313,5 @@ public class Convertidor {
 
         return textoIngresado.trim();
     }
+
 }
