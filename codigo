@@ -203,5 +203,37 @@ public class Convertidor {
 
                 break;
             }
-        }
-    }
+        }
+    }
+
+    
+    // Ventanita que SOLO acepta dígitos 0-9 (menú y decimal)
+    private static String pedirSoloNumeros(String tituloVentana, String mensajeVentana) {
+
+        // Creo el campo de texto donde el usuario va a escribir
+        JTextField campoTexto = new JTextField();
+
+        // Le agrego un KeyListener para bloquear cualquier cosa que no sea número
+        // y también bloquear cuando ya tenga 9 dígitos
+        campoTexto.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                char tecla = e.getKeyChar();
+
+                // Dejo pasar Backspace para que sí pueda borrar
+                if (tecla == '\b') {
+                    return;
+                }
+
+                // Si la tecla no es un dígito (0-9), entonces no la dejo escribir
+                if (!Character.isDigit(tecla)) {
+                    e.consume(); // Cancelo la tecla
+                    return;
+                }
+
+                // Si ya hay 9 dígitos escritos, ya no dejo escribir más
+                if (campoTexto.getText().length() >= 9) {
+                    e.consume(); // Bloqueo el siguiente carácter
+                }
+            }
+        });
