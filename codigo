@@ -135,4 +135,73 @@ public class Convertidor {
                 );
 
                 break;
-            }
+            }
+
+            // CASO 2: BINARIO A DECIMAL
+            case 2: {
+
+                // Pedir BINARIO obligatoriamente (solo 0 y 1)
+                String textoBinario = "";
+                while (textoBinario.isEmpty()) {
+
+                    textoBinario = pedirSoloBinarios(
+                            "Binario a Decimal",
+                            "Ingresa un número binario (solo 0 y 1, ej. 101):"
+                    );
+
+                    // Si cancela, salgo del programa
+                    if (textoBinario == null) {
+                        return;
+                    }
+
+                    // Si viene vacío, aviso y repito el while
+                    if (textoBinario.isEmpty()) {
+                        JOptionPane.showMessageDialog(
+                                null,
+                                "No puedes dejar vacío, ingresa un número binario.",
+                                "Dato faltante",
+                                JOptionPane.WARNING_MESSAGE
+                        );
+                    }
+                }
+
+                // Convierto el binario que escribió el usuario a int
+                int numeroBinarioUsuario = Integer.parseInt(textoBinario);
+
+                // Variable donde voy a ir acumulando el resultado decimal
+                int decimalCalculado = 0;
+
+                // Esta variable representa la potencia de 2 (1, 2, 4, 8, 16, ...)
+                int baseActual = 1;
+
+                // Copia del binario original para irlo "desarmando" sin perder el valor original
+                int copiaBinaria = numeroBinarioUsuario;
+
+                // Ciclo: mientras todavía queden dígitos en el número binario
+                while (copiaBinaria > 0) {
+
+                    // Saco el último dígito de la derecha (0 o 1) usando módulo 10
+                    int ultimoDigitoDerecha = copiaBinaria % 10;
+
+                    // Sumo al resultado: dígito * la base actual (1, 2, 4, 8, etc)
+                    decimalCalculado = decimalCalculado + (ultimoDigitoDerecha * baseActual);
+
+                    // Quito el último dígito al número binario (básicamente recorro hacia la izquierda)
+                    copiaBinaria = copiaBinaria / 10;
+
+                    // Multiplico la base por 2 para la siguiente posición (siguiente potencia de 2)
+                    baseActual = baseActual * 2;
+                }
+
+                // Muestro el resultado ya convertido a decimal
+                JOptionPane.showMessageDialog(
+                        null,
+                        "El número binario " + numeroBinarioUsuario + " en decimal es: " + decimalCalculado,
+                        "Resultado Binario a Decimal",
+                        JOptionPane.INFORMATION_MESSAGE
+                );
+
+                break;
+            }
+        }
+    }
