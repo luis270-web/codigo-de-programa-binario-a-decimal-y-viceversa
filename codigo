@@ -1,77 +1,138 @@
-import java.util.Scanner;
+// Importo JOptionPane y otros para poder armar mis propias ventanitas con validación
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
-public class conversor{
+public class Convertidor {
+
     public static void main(String[] args) {
 
-        Scanner entrada = new Scanner(System.in); // 1. Crear el Scanner para leer del teclado
+        // 1. Texto del menú principal del programa
+        //Armamos el texto del menú que se va a mostrar en la ventanita
+        String textoMenu = "--- CONVERSOR DE NÚMEROS ---\n"
+                + "1. Convertir Decimal a Binario\n"
+                + "2. Convertir Binario a Decimal\n"
+                + "Elige una opción (1 o 2):";
 
-        int opcion;
-        int numeroEntrada;
+        // Variable donde voy a guardar la opción ya como número
+        int opcionMenu = -1;
 
-        System.out.println("--= CONVERSOR DE NÚMEROS =--");
-        System.out.println("1. Convertir Decimal a Binario");
-        System.out.println("2. Convertir Binario a Decimal");
-        System.out.println("Elige una opción (1 o 2): ");
-        opcion = entrada.nextInt();
+        // Este ciclo se repite mientras NO elija 1 ni 2
+        while (opcionMenu != 1 && opcionMenu != 2) {
 
-        // 2. Estructura Switch para el menú
-        switch (opcion) {
+            // Ventanita con JTextField que solo acepta números
+            String opcionEscrita = pedirSoloNumeros(
+                    "Menú principal",   // Título de la ventana
+                    textoMenu           // Mensaje que quiero mostrar
+            );
 
-            case 1: // DECIMAL A BINARIO
-                System.out.print("Ingresa un número decimal (ej. 10): ");
-                numeroEntrada = entrada.nextInt();
+            // Si el usuario cancela, termino el programa
+            if (opcionEscrita == null) {
+                return;
+            }
 
-                // Validación sencilla para negativos
-                if (numeroEntrada < 0) {
-                    System.out.println("Por favor ingresa números positivos.");
-                } else {
-                    String resultadoBinario = ""; // Usamos String para guardar el resultado
-                    int temporal = numeroEntrada; // Copia para no perder el valor original
+            // Si dio OK pero no escribió nada, muestro mensaje y repito el menú
+            if (opcionEscrita.isEmpty()) {
+                JOptionPane.showMessageDialog(
+                        null,
+                        "Elige entre la opción 1 y 2.",
+                        "Opción incorrecta",
+                        JOptionPane.WARNING_MESSAGE
+                );
+                continue;   // Vuelve al inicio del while
+            }
 
-                    // Si el número es 0, el binario es 0
-                    if (temporal == 0) {
-                        resultadoBinario = "0";
-                    }
+            // Convierto lo que escribió a número entero (solo trae dígitos)
+            opcionMenu = Integer.parseInt(opcionEscrita);
 
-                    // Ciclo: Mientras el número sea mayor a 0
-                    while (temporal > 0) {
-                        int residuo = temporal % 2; // Obtenemos 0 o 1
-                        // IMPORTANTE: Sumamos el residuo AL INICIO del texto
-                        // Esto invierte el orden automáticamente sin usar arreglos
-                        resultadoBinario = residuo + resultadoBinario;
-                        temporal = temporal / 2; // Dividimos entre 2 para la siguiente vuelta
-                    }
-
-                    System.out.println("El número " + numeroEntrada + " en binario es: " + resultadoBinario);
-                }
-                break;
-
-            case 2: // BINARIO A DECIMAL
-                System.out.print("Ingresa un número binario (ej. 101): ");
-                numeroEntrada = entrada.nextInt();
-
-                int resultadoDecimal = 0;
-                int base = 1; // Representa 2^0, luego 2^1, 2^2, etc. (1, 2, 4, 8...)
-
-                int temporal = numeroEntrada;
-
-                // Ciclo: Mientras queden dígitos en el número
-                while (temporal > 0) {
-                    int ultimoDigito = temporal % 10; // Sacamos el último dígito (el de la derecha)
-
-                    // Solo procesamos si es binario real (0 o 1)
-                    // Calculamos el valor: dígito × base actual
-                    resultadoDecimal = resultadoDecimal + (ultimoDigito * base);
-
-                    temporal = temporal / 10; // Eliminamos el último dígito
-                    base = base * 2; // Aumentamos la potencia de 2 (1, 2, 4, 8...)
-                }
-
-                System.out.println("El binario " + numeroEntrada + " en decimal es: " + resultadoDecimal);
-                break;
-
-            default:
-                System.out.println("Opción no válida. Reinicia el programa.");
+            // Si la opción no es 1 ni 2, le aviso y se repite el ciclo
+            if (opcionMenu != 1 && opcionMenu != 2) {
+                JOptionPane.showMessageDialog(
+                        null,
+                        "Elige entre la opción 1 y 2.",
+                        "Opción incorrecta",
+                        JOptionPane.WARNING_MESSAGE
+                );
+            }
         }
-    }
-}
+
+        // 2. Switch para decidir qué conversión hacer
+        switch (opcionMenu) {
+
+            // CASO 1: DECIMAL A BINARIO
+            case 1: {
+
+                // Pedir DECIMAL obligatoriamente
+                String textoDecimal = "";
+                while (textoDecimal.isEmpty()) {
+
+                    textoDecimal = pedirSoloNumeros(
+                            "Decimal a Binario",
+                            "Ingresa un número decimal (ej. 10):"
+                    );
+
+                    // Si cancela, salgo del programa
+                    if (textoDecimal == null) {
+                        return;
+                    }
+
+                    // Si viene vacío, aviso y repito el while
+                    if (textoDecimal.isEmpty()) {
+                        JOptionPane.showMessageDialog(
+                                null,
+                                "No puedes dejar vacío, ingresa un número decimal.",
+                                "Dato faltante",
+                                JOptionPane.WARNING_MESSAGE
+                        );
+                    }
+                }
+
+                // Convierto el texto a número entero 
+                int numeroDecimalUsuario = Integer.parseInt(textoDecimal);
+
+                // Validación extra por si quiero evitar negativos
+                if (numeroDecimalUsuario < 0) {
+                    JOptionPane.showMessageDialog(
+                            null,
+                            "Por favor ingresa solo números positivos.",
+                            "Número no válido",
+                            JOptionPane.WARNING_MESSAGE
+                    );
+                    return;
+                }
+
+                // String donde voy a ir armando el binario final
+                String binarioFinal = "";
+
+                // Variable temporal para ir dividiendo sin perder el original
+                int numeroTemporal = numeroDecimalUsuario;
+
+                // Caso especial: si el número es 0, el binario es "0"
+                if (numeroTemporal == 0) {
+                    binarioFinal = "0";
+                } else {
+                    // Ciclo: mientras el número sea mayor que 0 lo voy dividiendo entre 2
+                    while (numeroTemporal > 0) {
+
+                        // Saco el residuo de dividir entre 2 (me da 0 o 1)
+                        int residuoDivision = numeroTemporal % 2;
+
+                        // Voy agregando el residuo al INICIO del String
+                        binarioFinal = residuoDivision + binarioFinal;
+
+                        // Divido el número entre 2 para la siguiente vuelta del ciclo
+                        numeroTemporal = numeroTemporal / 2;
+                    }
+                }
+
+                // Muestro el resultado en una ventanita
+                JOptionPane.showMessageDialog(
+                        null,
+                        "El número " + numeroDecimalUsuario + " en binario es: " + binarioFinal,
+                        "Resultado Decimal a Binario",
+                        JOptionPane.INFORMATION_MESSAGE
+                );
+
+                break;
+            }
